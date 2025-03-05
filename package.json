@@ -9,9 +9,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@vercel/blob": "^0.27.2",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-markdown": "^10.0.1",
+    "react-plotly.js": "^2.6.0",
     "remark": "latest",
     "remark-html": "latest"
   }
