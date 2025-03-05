@@ -2,7 +2,6 @@
   "name": "i-love-datacience",
   "version": "1.0.0",
   "description": "Plataforma para compartir proyectos de ciencia de datos",
-  "main": "index.html",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

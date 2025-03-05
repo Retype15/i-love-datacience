@@ -10,7 +10,7 @@ export default async function ProjectPage({ params }) {
   const { projectId } = await params;  // Esto asegura que `params` se resuelva como una promesa.
 
   // URL para obtener el JSON del proyecto desde Vercel (ajustar el dominio correctamente)
-  const blobUrl = `api/__i-love-datacience/projects/${encodeURIComponent(projectId)}.json`;
+  const blobUrl = `https://i-love-datacience.vercel.app/__i-love-datacience/projects/${encodeURIComponent(projectId)}.json`;
 
   // Obtener el JSON del proyecto
   const res = await fetch(blobUrl);
