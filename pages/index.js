@@ -4,67 +4,89 @@ import { useRouter } from "next/router";
 
 export default function Home({ projects }) {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    video: null,
-    plotly: null,
-    html: null
-  });
+  const [title, setTitle] = useState("");
+  const [youtube, setYoutube] = useState("");
+  const [sections, setSections] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files) {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+  // Agregar una nueva sección vacía
+  const addSection = () => {
+    setSections([...sections, { type: "markdown", content: "" }]);
+  };
+
+  // Actualizar una sección específica
+  const updateSection = (index, field, value) => {
+    const newSections = sections.slice();
+    newSections[index] = { ...newSections[index], [field]: value };
+    setSections(newSections);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append("title", formData.title);
-    data.append("description", formData.description);
-    if (formData.video) data.append("video", formData.video);
-    if (formData.plotly) data.append("plotly", formData.plotly);
-    if (formData.html) data.append("html", formData.html);
-
+    const payload = { title, youtube, sections };
     const res = await fetch("/api/createProject", {
       method: "POST",
-      body: data
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
-    const json = await res.json();
-    if (json.id) {
-      router.push(`/project/${json.id}`);
+    const data = await res.json();
+    if (data.id) {
+      router.push(`/project/${data.id}`);
     }
   };
 
   return (
-    <div>
+    <div style={{ padding: "2rem" }}>
       <h1>Crear un nuevo proyecto</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <label>Título:</label><br/>
-        <input type="text" name="title" onChange={handleChange} required /><br/><br/>
-
-        <label>Descripción (Markdown):</label><br/>
-        <textarea name="description" onChange={handleChange} rows="10" cols="50"></textarea><br/><br/>
-
-        <label>Video de presentación (mp4, webm, ogg):</label><br/>
-        <input type="file" name="video" accept="video/mp4,video/webm,video/ogg" onChange={handleChange} /><br/><br/>
-
-        <label>Gráfica Plotly (JSON):</label><br/>
-        <input type="file" name="plotly" accept=".json" onChange={handleChange} /><br/><br/>
-
-        <label>Archivo HTML para animaciones u otras páginas:</label><br/>
-        <input type="file" name="html" accept=".html,.htm" onChange={handleChange} /><br/><br/>
-
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Título:</label><br />
+          <input 
+            type="text" 
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)} 
+            required 
+          />
+        </div>
+        <div>
+          <label>Enlace al video de presentación (YouTube):</label><br />
+          <input 
+            type="url" 
+            value={youtube} 
+            onChange={(e) => setYoutube(e.target.value)} 
+            required 
+          />
+        </div>
+        <div>
+          <h2>Secciones (como celdas de Jupyter)</h2>
+          {sections.map((section, index) => (
+            <div key={index} style={{ border: "1px solid #ccc", padding: "1rem", marginBottom: "1rem" }}>
+              <label>Tipo:</label>{" "}
+              <select
+                value={section.type}
+                onChange={(e) => updateSection(index, "type", e.target.value)}
+              >
+                <option value="markdown">Markdown</option>
+                <option value="graph">Gráfica (Plotly JSON)</option>
+              </select>
+              <br />
+              <label>Contenido:</label><br />
+              <textarea
+                rows="5"
+                cols="50"
+                value={section.content}
+                onChange={(e) => updateSection(index, "content", e.target.value)}
+              ></textarea>
+            </div>
+          ))}
+          <button type="button" onClick={addSection}>Agregar Sección</button>
+        </div>
+        <br />
         <button type="submit">Crear Proyecto</button>
       </form>
 
       <h2>Proyectos existentes</h2>
       <ul>
-        {projects.map(project => (
+        {projects.map((project) => (
           <li key={project.id}>
             <a href={`/project/${project.id}`}>{project.title}</a>
           </li>
@@ -74,13 +96,11 @@ export default function Home({ projects }) {
   );
 }
 
+// Se obtienen los proyectos desde el API (que lee los archivos en __i-love-datacience/projects)
 export async function getServerSideProps() {
-  // Se obtiene la lista de proyectos desde la API interna.
-  const res = await fetch(`${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : 'http://localhost:3000'}/api/projects`);
+  const protocol = process.env.VERCEL_URL ? "https" : "http";
+  const host = process.env.VERCEL_URL || "localhost:3000";
+  const res = await fetch(`${protocol}://${host}/api/projects`);
   const data = await res.json();
-  return {
-    props: {
-      projects: data.projects || []
-    }
-  };
+  return { props: { projects: data.projects || [] } };
 }

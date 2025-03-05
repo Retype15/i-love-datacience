@@ -1,11 +1,25 @@
 // pages/api/projects/[id].js
-let projects = global.projects || [];
-export default function handler(req, res) {
-  const { id } = req.query;
-  const project = projects.find((p) => p.id === parseInt(id));
-  if (!project) {
-    res.status(404).json({ error: "Proyecto no encontrado" });
+import fs from "fs";
+import path from "path";
+
+const PROJECTS_DIR = path.join(process.cwd(), "__i-love-datacience", "projects");
+
+export default async function handler(req, res) {
+  if (req.method === "GET") {
+    const { id } = req.query;
+    const filePath = path.join(PROJECTS_DIR, `${id}.json`);
+    if (fs.existsSync(filePath)) {
+      try {
+        const content = fs.readFileSync(filePath, "utf8");
+        const project = JSON.parse(content);
+        res.status(200).json({ project });
+      } catch (error) {
+        res.status(500).json({ error: "Error al leer el proyecto" });
+      }
+    } else {
+      res.status(404).json({ error: "Proyecto no encontrado" });
+    }
   } else {
-    res.status(200).json({ project });
+    res.status(405).end();
   }
 }
