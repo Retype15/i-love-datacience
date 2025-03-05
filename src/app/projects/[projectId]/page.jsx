@@ -3,16 +3,18 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import PlotlyChart from '../../../components/PlotlyChart';
 import YouTubeEmbed from '../../../components/YouTubeEmbed';
+import { getDownloadUrl } from '@vercel/blob';
 
 export default async function ProjectPage({ params }) {
   // Asegurarse de que `params` se resuelva correctamente.
   const { projectId } = await params;  // Esto asegura que `params` se resuelva como una promesa.
 
   // URL para obtener el JSON del proyecto desde Vercel (ajustar el dominio correctamente)
-  const blobUrl = `https://i-love-datacience.vercel.app/__i-love-datacience/projects/${encodeURIComponent(projectId)}.json`;
+  const blobUrl = `api/__i-love-datacience/projects/${encodeURIComponent(projectId)}.json`;
 
   // Obtener el JSON del proyecto
   const res = await fetch(blobUrl);
+  console.log('Response:', res)
   if (!res.ok) {
     return <p>Error al cargar el proyecto.</p>;
   }
