@@ -9,7 +9,7 @@ export async function POST(request) {
     const data = await request.json();
 
     // Generamos un identificador único para el proyecto (puede sustituirse por otro método)
-    const projectId = Date.now().toString();
+    const projectId = data['title'];
 
     // Definimos la ruta en Blob donde se almacenará el archivo JSON
     const filePath = `__i-love-datacience/projects/${projectId}.json`;
