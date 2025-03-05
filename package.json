@@ -1,0 +1,18 @@
+{
+  "name": "i-love-datacience",
+  "version": "1.0.0",
+  "description": "Plataforma para compartir proyectos de ciencia de datos",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "remark": "latest",
+    "remark-html": "latest"
+  }
+}
