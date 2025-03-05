@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Proyectos de Ciencia de Datos</title>
+</head>
+<body>
+  <h1>Crear un nuevo proyecto</h1>
+  <form action="/" method="post" enctype="multipart/form-data">
+    <label for="title">Título:</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+    
+    <label for="description">Descripción (Markdown):</label><br>
+    <textarea id="description" name="description" rows="10" cols="50"></textarea><br><br>
+    
+    <label for="video">Video de presentación (mp4, webm, ogg):</label><br>
+    <input type="file" id="video" name="video" accept="video/mp4,video/webm,video/ogg"><br><br>
+    
+    <label for="plotly_file">Gráfica Plotly (JSON):</label><br>
+    <input type="file" id="plotly_file" name="plotly_file" accept=".json"><br><br>
+    
+    <label for="html_file">Archivo HTML para animaciones u otras páginas:</label><br>
+    <input type="file" id="html_file" name="html_file" accept=".html,.htm"><br><br>
+    
+    <input type="submit" value="Crear Proyecto">
+  </form>
+  
+  <h2>Proyectos existentes</h2>
+  <ul>
+  {% for project in projects.values() %}
+    <li><a href="/project/{{ project.id }}">{{ project.title }}</a></li>
+  {% endfor %}
+  </ul>
+</body>
+</html>
