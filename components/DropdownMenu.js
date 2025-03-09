@@ -12,7 +12,7 @@ export default function DropdownMenu({ onEdit, onOptions, onDelete }) {
         &#x22EE;
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md">
+        <div className="absolute left-0 mt-2 w-40 bg-white border rounded shadow-md">
           <button className="block w-full text-left p-2 hover:bg-gray-100" onClick={onEdit}>Editar</button>
           <button className="block w-full text-left p-2 hover:bg-gray-100" onClick={onOptions}>Opciones</button>
           <button className="block w-full text-left p-2 hover:bg-gray-100" onClick={onDelete}>Eliminar</button>
