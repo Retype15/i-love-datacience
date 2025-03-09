@@ -3,15 +3,15 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import ProjectList from '../components/ProjectList';
 import { fetchProjects } from '../utils/api';
+require('dotenv').config({ path: '.env.local' });
 
 export default function Home() {
   const [projects, setProjects] = useState([]);
-
   useEffect(() => {
     // Se debe implementar la lógica para obtener los proyectos almacenados
     fetchProjects().then(data => setProjects(data));
   }, []);
-
+  console.log("Projects:", projects);
   const handleEdit = (project) => {
     // Lógica para editar: podría redirigir a una página de edición
     console.log("Editar", project);
@@ -26,7 +26,7 @@ export default function Home() {
     // Lógica para mostrar opciones adicionales
     console.log("Opciones", project);
   };
-
+  
   return (
     <div className="container mx-auto p-4">
       <header className="flex justify-between items-center mb-8">

@@ -11,3 +11,14 @@ export async function getUsers() {
     return true;
   }
   
+  export async function getProject() {
+    // Implementar la obtención de usuarios desde Vercel Edge Config
+    print(`Project getted`)
+    return [];
+  }
+  
+  export async function addProject(user) {
+    // Implementar la lógica para agregar un usuario a Edge Config
+    print(`Project ${user} added`)
+    return true;
+  }

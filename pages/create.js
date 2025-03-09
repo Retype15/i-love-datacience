@@ -5,12 +5,11 @@ import { createProject } from '../utils/api';
 
 export default function CreateProject() {
   const router = useRouter();
-
   const handleSubmit = async (projectData) => {
     // Se crea un nuevo proyecto; se asigna un ID (por ejemplo, usando la marca de tiempo)
     const newProject = await createProject(projectData);
     // Redirigir a la página del proyecto creado
-    router.push(`/${newProject.id}`);
+    router.push(`/${encodeURIComponent(newProject.id)}`);
   };
 
   return (

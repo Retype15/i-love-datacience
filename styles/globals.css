@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Estilos adicionales para el modo oscuro */
+.dark .prose {
+  color: white;
+  max-width: 65ch; /* Ancho máximo del texto */
+}
+.dark .prose a {
+  color: #90cdf4;
+}
+.dark .prose strong {
+  color: #f6e05e;
+}
+.dark .prose ul > li::before {
+  background-color: #718096;
+}
+.dark .prose hr {
+  border-color: #718096;
+}
+.dark .prose blockquote {
+  color: #a0aec0;
+  border-left-color: #4a5568;
+}

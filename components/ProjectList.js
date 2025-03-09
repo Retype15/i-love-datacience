@@ -2,6 +2,7 @@
 import ProjectItem from './ProjectItem';
 
 export default function ProjectList({ projects, onEdit, onDelete, onOptions }) {
+  console.log("ProjectList:", projects);
   return (
     <div className="space-y-4">
       {projects.map((project) => (

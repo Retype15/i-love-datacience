@@ -2,3 +2,4 @@ node_modules/
 .vercel/
 __i-love-datacience/
 .next/
+.vercel

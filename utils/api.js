@@ -1,56 +1,98 @@
-// Funciones para interactuar con el Blob (crear, leer, actualizar, eliminar) 
-import { put } from "@vercel/blob";
-
-const BASE_URL = "https://3kd8fds38lvbrrcg.public.blob.vercel-storage.com/__i-love-datacience/projects";
+const API_BASE_URL = "/api"; // Base URL de las API Routes
 const BASE_PATH = '__i-love-datacience/projects';
+const { list } = require("@vercel/blob");
 
 export async function fetchProjects() {
-  // Aquí se debería implementar la lógica para obtener la lista de proyectos.
-  // Una posibilidad es mantener un índice en otra ubicación (o en edge-config).
-  // Por ahora, se retorna un arreglo vacío.
-  return [];
+  const response = await fetch('/api/getAllBlobs');
+  if (!response.ok) {
+    throw new Error('Error getting all blobs');
+  }
+  return await response.json();
 }
+
+
+/*export async function fetchProjectById(projectId) {
+  const encodedString = encodeURIComponent(projectId);
+  console.warn("Fetching project with ID:", projectId);
+  const url = `${BASE_PATH}/${encodedString}.json`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Error al obtener el proyecto");
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    return null;
+  }
+}*/
 
 export async function fetchProjectById(projectId) {
-  const url = `${BASE_URL}/${encodeURIComponent(projectId)}.json`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Error al obtener el proyecto");
-  return res.json();
+  try {
+    const response = await fetch(`${API_BASE_URL}/fetchProjectById?projectId=${encodeURIComponent(projectId)}`);
+    const result = await response.json();
+    return result.success ? result.project : null;
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    return null;
+  }
 }
 
-
 export async function createProject(projectData) {
-    // Generar un ID único para el proyecto (por ejemplo, usando Date.now())
-    const projectId = Date.now().toString();
-    // Construir el nombre del archivo incluyendo la carpeta y extensión .json
-    const fileName = `${BASE_PATH}/${encodeURIComponent(projectId)}.json`;
-    const data = { ...projectData, id: projectId };
-  
-    // Usar la función put para subir el JSON convertido a string
-    const { url } = await put(fileName, JSON.stringify(data), {
-      access: 'public',
-      contentType: 'application/json'
+  try {
+    const response = await fetch(`${API_BASE_URL}/createProject`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(projectData),
     });
-  
-    console.log("Proyecto creado en:", url);
-    return data;
+
+    const result = await response.json();
+    if (result.success) {
+      console.log("Proyecto creado:", result.project);
+      return result.project;
+    } else {
+      console.error("Error al crear el proyecto:", result.error);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error en la llamada a la API:", error);
+    return null;
   }
+}
 
 export async function updateProject(projectId, projectData) {
-  const url = `${BASE_URL}/${encodeURIComponent(projectId)}.json`;
-  const data = { ...projectData, id: projectId };
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  if (!res.ok) throw new Error("Error al actualizar el proyecto");
-  return data;
+  try {
+    const response = await fetch(`${API_BASE_URL}/updateProject`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ projectId, projectData }),
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    return { success: false, error: error.message };
+  }
 }
 
 export async function deleteProject(projectId) {
-  const url = `${BASE_URL}/${encodeURIComponent(projectId)}.json`;
-  const res = await fetch(url, { method: 'DELETE' });
-  if (!res.ok) throw new Error("Error al eliminar el proyecto");
-  return true;
+  try {
+    const response = await fetch(`${API_BASE_URL}/deleteProject`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ projectId }),
+    });
+
+    const result = await response.json();
+    return result.success;
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    return false;
+  }
 }
